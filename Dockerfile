@@ -16,10 +16,10 @@ COPY . .
 RUN cargo build --release
 
 # Stage 2: Create a minimal final image
-FROM ubuntu:22.04
+FROM debian:bookworm-slim
 
 # Install necessary runtime dependencies (glibc and others)
-RUN apt-get update && apt-get install -y libc6 libssl3
+RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
 
 # Copy the compiled binary from the builder
 COPY --from=builder /app/target/release/learn-cicd /usr/local/bin/app
