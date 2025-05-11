@@ -19,7 +19,7 @@ RUN cargo build --release
 FROM debian:bullseye-slim
 
 # Install required libraries (optional: for TLS support)
-RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y pkg-config libssl-dev
 
 # Copy the compiled binary from the builder
 COPY --from=builder /app/target/release/learn-cicd /usr/local/bin/app
