@@ -16,10 +16,10 @@ COPY . .
 RUN cargo build --release
 
 # Stage 2: Create a minimal final image
-FROM debian:bullseye-slim
+FROM ubuntu:22.04
 
-# Install required libraries (optional: for TLS support)
-RUN apt-get update && apt-get install -y pkg-config libssl-dev
+# Install necessary runtime dependencies (glibc and others)
+RUN apt-get update && apt-get install -y libc6 libssl3
 
 # Copy the compiled binary from the builder
 COPY --from=builder /app/target/release/learn-cicd /usr/local/bin/app
