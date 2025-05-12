@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  learn-cicd:
+    image: ghcr.io/indrawow/learn-cicd-image:latest
+    ports:
+      - "8080:8080"
+    environment:
+      - RUST_LOG=debug
+    restart: unless-stopped
