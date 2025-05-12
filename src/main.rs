@@ -14,5 +14,5 @@ async fn main() {
 }
 
 async fn root() -> &'static str {
-    "Hello, World!"
+    "Hello, World! v0.0.1"
 }
