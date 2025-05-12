@@ -1,37 +1,22 @@
 # Stage 1: Build the Rust binary
-FROM rust:1.86.0 as builder
+FROM rust:slim AS builder
 
-# Set the working directory inside the container
-WORKDIR /app
+# Set work directory inside the container
+WORKDIR /learn-cicd
 
-# Pre-cache dependencies
-COPY Cargo.toml Cargo.lock ./
-RUN mkdir src && echo "fn main() {}" > src/main.rs
-RUN cargo fetch
-
-# Copy source code and assets
+# Copy Cargo.toml and source files
 COPY . .
 
-# Build the release version
-RUN cargo build --release
+# Build the project
+RUN cargo build --release --bin learn-cicd
 
-# Stage 2: Create a minimal final image
-FROM debian:bookworm-slim
+# Stage 2: Create a minimal runtime image
+FROM debian:trixie-slim AS runtime
 
-# Install necessary runtime dependencies (glibc and others)
-RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
+WORKDIR /learn-cicd
 
-# Copy the compiled binary from the builder
-COPY --from=builder /app/target/release/learn-cicd /usr/local/bin/app
-
-# Copy the assets directory (contains index.html)
-COPY assets /assets
-
-# Set the working directory (optional, just for clarity)
-WORKDIR /assets
-
-# Expose the port your app runs on
-EXPOSE 8080
+# Copy the compiled binary from builder stage
+COPY --from=builder /learn-cicd/target/release/learn-cicd /usr/local/bin/
 
 # Run the binary
-CMD ["app"]
+ENTRYPOINT ["/usr/local/bin/learn-cicd"]
